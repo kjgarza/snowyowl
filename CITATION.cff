@@ -6,8 +6,8 @@ abstract: "An automated overnight workflow system that uses GitHub Copilot CLI t
 authors:
   - family-names: "Garza"
     given-names: "Kristian"
-repository-code: "https://github.com/kristiangarza/snowyowl"
-url: "https://github.com/kristiangarza/snowyowl"
+repository-code: "https://github.com/kjgarza/snowyowl"
+url: "https://github.com/kjgarza/snowyowl"
 license: MIT
 keywords:
   - automation

@@ -1,0 +1,26 @@
+# SnowyOwl logs and temporary files
+logs/
+*.log
+
+# macOS
+.DS_Store
+
+# Temporary task markers
+.snowyowl_tasks/
+
+# Environment files with secrets
+.env.local
+secrets.env
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Backup files
+*.bak
+*.backup
+
+docs/

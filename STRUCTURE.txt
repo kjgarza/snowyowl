@@ -1,0 +1,82 @@
+🦉 SnowyOwl Project Structure
+===============================
+
+snowyowl/
+│
+├── 📜 Core Scripts (Executable)
+│   ├── run_copilot_automation.sh     ⭐ Main automation engine
+│   ├── setup.sh                       🔧 Interactive setup wizard
+│   ├── copilot_integration.sh         🤖 Copilot CLI integration
+│   └── verify_installation.sh         ✅ Installation verification
+│
+├── 📚 Documentation
+│   ├── README.md                      📖 Complete user guide
+│   ├── QUICKSTART.md                  ⚡ Quick reference
+│   ├── PROJECT_OVERVIEW.md            🏗️  Architecture & design
+│   ├── IMPLEMENTATION_SUMMARY.md      🎉 Implementation details
+│   ├── CHANGELOG.md                   📝 Version history
+│   ├── TASKS.md                       📋 Original specification
+│   └── STRUCTURE.txt                  🗂️  This file
+│
+├── ⚙️  Configuration
+│   ├── config.env                     🔐 Environment settings
+│   ├── com.snowyowl.automation.plist  ⏰ macOS scheduler
+│   └── .gitignore                     🚫 Git exclusions
+│
+├── 📁 Directories
+│   ├── logs/                          📊 Execution logs
+│   │   ├── automation_*.log            (Main run logs)
+│   │   ├── REPONAME_*.log             (Per-repo logs)
+│   │   └── launchd*.log               (Scheduler logs)
+│   │
+│   ├── templates/                     📄 Reusable templates
+│   │   └── TASKS.template.md          (Task file template)
+│   │
+│   └── examples/                      💡 Real-world examples
+│       ├── web-app-tasks.md           (Web application)
+│       ├── python-library-tasks.md    (Python library)
+│       └── react-app-tasks.md         (React application)
+│
+└── 🎯 Workflow
+
+    User Creates TASKS.md
+           ↓
+    SnowyOwl Discovers Tasks
+           ↓
+    Creates Feature Branch
+           ↓
+    Processes Each Task
+           ↓
+    Commits Changes
+           ↓
+    Pushes to GitHub
+           ↓
+    Opens Pull Request
+           ↓
+    Logs Everything
+           ↓
+    User Reviews PR
+
+Key Features:
+═════════════
+✅ Multi-repository automation
+✅ Safe, isolated branches
+✅ Comprehensive logging
+✅ Dry-run testing
+✅ Scheduled execution
+✅ GitHub integration
+✅ Full documentation
+
+Quick Start:
+═══════════
+1. ./setup.sh
+2. Create TASKS.md in your repos
+3. ./run_copilot_automation.sh --dry-run
+4. ./run_copilot_automation.sh
+
+For Help:
+════════
+./run_copilot_automation.sh --help
+./setup.sh
+cat README.md
+cat QUICKSTART.md

@@ -187,6 +187,22 @@ PROMPT_EOF
   fi
 }
 
+# Check if repository has a GitHub remote
+has_github_remote() {
+  local repo_path="$1"
+  cd "$repo_path"
+  
+  # Get all remote URLs
+  local remotes=$(git remote -v 2>/dev/null || echo "")
+  
+  # Check if any remote URL contains github.com
+  if echo "$remotes" | grep -q 'github.com'; then
+    return 0  # Has GitHub remote
+  else
+    return 1  # No GitHub remote
+  fi
+}
+
 # Check prerequisites
 check_prerequisites() {
   log "Checking prerequisites..."
@@ -371,7 +387,7 @@ implement_task() {
   fi
 }
 
-# Create PR for a branch
+# Create PR for a branch or just commit if no GitHub remote
 create_pr_for_branch() {
   local repo_name="$1"
   local feature_branch="$2"
@@ -380,6 +396,18 @@ create_pr_for_branch() {
   local dry_run="$5"
   shift 5
   local tasks=("${@}")
+  
+  # Check if repository has GitHub remote
+  if ! has_github_remote "$(pwd)"; then
+    log "Repository has no GitHub remote - skipping push and PR creation"
+    log "Changes committed to branch: $feature_branch"
+    if [[ "$dry_run" == false ]]; then
+      log_success "All changes committed to local branch: $feature_branch"
+    else
+      log "[DRY RUN] Would commit to local branch: $feature_branch (no GitHub remote)"
+    fi
+    return 0
+  fi
   
   if [[ "$dry_run" == false ]]; then
     log "Pushing branch to GitHub..."

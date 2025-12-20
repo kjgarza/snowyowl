@@ -292,7 +292,7 @@ chmod +x run_copilot_automation.sh
 
 ## 📜 License
 
-This is an internal automation tool. Use responsibly and review all automated changes.
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🔗 References
 

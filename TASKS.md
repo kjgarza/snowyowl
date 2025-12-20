@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] add git repo
-- [ ] add citation file with mise commands
+- [X] add git repo
+- [X] add citation file with mise commands
 - [ ] add license MIT
-- [ ] exlude logs from ignore
+- [X] exlude logs from ignore

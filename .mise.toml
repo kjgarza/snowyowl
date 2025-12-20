@@ -1,0 +1,95 @@
+# mise configuration for SnowyOwl
+# Run tasks with: mise run <task-name>
+
+[tasks.setup]
+description = "Run the initial setup wizard"
+run = "./setup.sh"
+
+[tasks.verify]
+description = "Verify installation and dependencies"
+run = "./verify_installation.sh"
+
+[tasks.automate]
+description = "Run the main automation workflow"
+run = "./run_copilot_automation.sh"
+
+[tasks."automate:dry"]
+description = "Run automation in dry-run mode (no commits/PRs)"
+run = "./run_copilot_automation.sh --dry-run"
+
+[tasks."automate:custom"]
+description = "Run automation with custom root directory"
+run = """
+read -p "Enter root directory [~/aves]: " ROOT_DIR
+ROOT_DIR=${ROOT_DIR:-~/aves}
+./run_copilot_automation.sh --root "$ROOT_DIR"
+"""
+
+[tasks.logs]
+description = "Show latest automation log"
+run = "ls -t logs/automation_*.log 2>/dev/null | head -1 | xargs tail -f"
+
+[tasks."logs:errors"]
+description = "Search for errors in logs"
+run = "grep -i 'error\\|fail' logs/*.log 2>/dev/null || echo 'No errors found'"
+
+[tasks.clean]
+description = "Clean old log files (keep last 10)"
+run = """
+cd logs
+ls -t automation_*.log 2>/dev/null | tail -n +11 | xargs rm -f
+echo "Cleaned old log files"
+"""
+
+[tasks.status]
+description = "Show git status and recent branches"
+run = """
+echo "=== Current Status ==="
+git status -s
+echo ""
+echo "=== Recent SnowyOwl Branches ==="
+git branch -a | grep snowyowl | tail -5
+"""
+
+[tasks.install]
+description = "Install all required dependencies"
+run = """
+echo "Installing dependencies..."
+# Check for Homebrew on macOS
+if [[ "$OSTYPE" == "darwin"* ]] && ! command -v brew &> /dev/null; then
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Install GitHub CLI
+if ! command -v gh &> /dev/null; then
+  echo "Installing GitHub CLI..."
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    brew install gh
+  else
+    curl -sS https://webi.sh/gh | sh
+  fi
+fi
+
+# Install LLM CLI
+if ! command -v llm &> /dev/null; then
+  echo "Installing LLM CLI..."
+  pip install llm || pipx install llm
+fi
+
+# Install GitHub Copilot CLI extension
+if ! gh extension list | grep -q gh-copilot; then
+  echo "Installing GitHub Copilot CLI..."
+  gh extension install github/gh-copilot
+fi
+
+echo "✅ All dependencies installed!"
+"""
+
+[tasks.test]
+description = "Run a test automation on the snowyowl repository itself"
+run = "./run_copilot_automation.sh --root /Users/kristiangarza/aves/labs --dry-run"
+
+[tasks.help]
+description = "Show all available mise tasks"
+run = "mise tasks ls"

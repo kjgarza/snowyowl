@@ -22,6 +22,7 @@ SnowyOwl automates the complete software development workflow using GitHub Copil
 - **LLM CLI** - For intelligent task parsing ([simonw/llm](https://github.com/simonw/llm))
 - **GitHub Copilot CLI** - For AI-powered code generation (optional)
 - **GitHub Copilot subscription** - Pro, Business, or Enterprise (optional)
+- **mise** - Task runner and environment manager (optional, but recommended) ([jdx/mise](https://github.com/jdx/mise))
 
 ### Installation
 
@@ -63,7 +64,34 @@ SnowyOwl automates the complete software development workflow using GitHub Copil
 
 ## 📝 Usage
 
-### Basic Usage
+### Using mise (Recommended)
+
+If you have [mise](https://mise.jdx.dev/) installed, you can use convenient task shortcuts:
+
+```bash
+# Quick start - run setup wizard
+mise run setup
+
+# Verify installation
+mise run verify
+
+# Run automation
+mise run automate
+
+# Dry run (no commits or PRs)
+mise run automate:dry
+
+# View all available tasks
+mise tasks ls
+
+# Show latest logs
+mise run logs
+
+# Check for errors in logs
+mise run logs:errors
+```
+
+### Basic Usage (without mise)
 
 ```bash
 ./run_copilot_automation.sh
@@ -140,6 +168,30 @@ copilot -p "Implement the plan for: <TASK>" \
 | `--allow-tool 'shell(git)'` | Allow Git commands |
 | `--allow-tool 'shell(gh)'` | Allow GitHub CLI commands |
 | `--deny-tool 'shell(rm)'` | Prevent dangerous deletions |
+
+## 🛠️ Available mise Tasks
+
+SnowyOwl includes a comprehensive set of mise tasks for common operations:
+
+| Task | Description |
+|------|-------------|
+| `mise run setup` | Run the initial setup wizard |
+| `mise run verify` | Verify installation and dependencies |
+| `mise run automate` | Run the main automation workflow |
+| `mise run automate:dry` | Run automation in dry-run mode |
+| `mise run automate:custom` | Run automation with custom root directory |
+| `mise run logs` | Show latest automation log |
+| `mise run logs:errors` | Search for errors in logs |
+| `mise run clean` | Clean old log files |
+| `mise run status` | Show git status and recent branches |
+| `mise run install` | Install all required dependencies |
+| `mise run test` | Run test automation on snowyowl itself |
+| `mise run help` | Show all available tasks |
+
+To see all tasks with descriptions:
+```bash
+mise tasks ls
+```
 
 ## 🌙 Overnight Execution
 
@@ -293,6 +345,17 @@ chmod +x run_copilot_automation.sh
 ## 📜 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
+
+## 📖 Citation
+
+If you use SnowyOwl in your research or project, please cite it using the metadata in `CITATION.cff`:
+
+```bash
+# View citation information
+cat CITATION.cff
+```
+
+Or use GitHub's built-in citation feature on the repository page.
 
 ## 🔗 References
 

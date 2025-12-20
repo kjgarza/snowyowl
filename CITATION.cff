@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "SnowyOwl - GitHub Copilot CLI Automation Workflow"
+abstract: "An automated overnight workflow system that uses GitHub Copilot CLI to autonomously read tasks, implement code changes, and create pull requests."
+authors:
+  - family-names: "Garza"
+    given-names: "Kristian"
+repository-code: "https://github.com/kristiangarza/snowyowl"
+url: "https://github.com/kristiangarza/snowyowl"
+license: MIT
+keywords:
+  - automation
+  - github-copilot
+  - workflow
+  - ci-cd
+  - task-automation
+  - llm
+  - ai-development
+version: "1.0.0"
+date-released: 2025-12-20

@@ -154,12 +154,19 @@ $task_spec
 
 Instructions:
 1. Read and understand the full specification above
-2. Implement ALL requirements listed in the specification
-3. Analyze existing code patterns and follow them
-4. Add appropriate error handling and logging
-5. Include helpful comments where needed
-6. Ensure the implementation is complete and production-ready
+2. Plan the necessary code changes
+3. Implement ALL requirements listed in the specification
+4. Analyze existing code patterns and follow them
+5. Add appropriate error handling and logging
+6. Include helpful comments where needed
 7. Make focused, minimal changes to accomplish this task
+
+Principles to follow:
+- Clarity over flexibility
+- Replaceability over extensibility
+- Refactoring over future-proofing
+- Working code over elegant abstractions
+- Apply KISS and YAGNI throughout.
 
 Please implement this task now.
 PROMPT_EOF

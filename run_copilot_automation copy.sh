@@ -26,7 +26,7 @@ set -euo pipefail
 ROOT="${HOME}/aves"
 BASE_BRANCH="main"
 DRY_RUN=false
-LOG_DIR="${HOME}/aves/labs/snowyowl/logs"
+LOG_DIR="${HOME}/aves/snowyowl/logs"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Parse command line arguments

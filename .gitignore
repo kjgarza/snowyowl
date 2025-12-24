@@ -24,3 +24,5 @@ secrets.env
 *.backup
 
 docs/
+
+.cursor/

@@ -346,17 +346,6 @@ chmod +x run_copilot_automation.sh
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## 📖 Citation
-
-If you use SnowyOwl in your research or project, please cite it using the metadata in `CITATION.cff`:
-
-```bash
-# View citation information
-cat CITATION.cff
-```
-
-Or use GitHub's built-in citation feature on the repository page.
-
 ## 🔗 References
 
 - [GitHub Copilot CLI Documentation](https://docs.github.com/copilot/concepts/agents/about-copilot-cli)
@@ -365,4 +354,3 @@ Or use GitHub's built-in citation feature on the repository page.
 
 ---
 
-**Built with ❤️ using GitHub Copilot CLI**

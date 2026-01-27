@@ -22,51 +22,130 @@ SnowyOwl automates the complete software development workflow using GitHub Copil
 - **LLM CLI** - For intelligent task parsing ([simonw/llm](https://github.com/simonw/llm))
 - **GitHub Copilot CLI** - For AI-powered code generation (optional)
 - **GitHub Copilot subscription** - Pro, Business, or Enterprise (optional)
-- **mise** - Task runner and environment manager (optional, but recommended) ([jdx/mise](https://github.com/jdx/mise))
+- **just** - Command runner (optional, but recommended) ([casey/just](https://github.com/casey/just))
+- **mise** - Task runner and environment manager (optional, alternative to just) ([jdx/mise](https://github.com/jdx/mise))
 
 ### Installation
 
-1. **Install GitHub CLI:**
+#### Quick Start with just (Recommended)
+
+If you have [just](https://just.systems) installed, setup is simple:
+
+```bash
+# Install all dependencies and set up
+just quickstart
+
+# Authenticate with GitHub
+just auth
+
+# Configure LLM with your OpenAI API key
+just config-llm
+
+# Verify installation
+just verify
+```
+
+#### Manual Installation
+
+1. **Install just (optional but recommended):**
+   ```bash
+   # macOS
+   brew install just
+
+   # Linux
+   cargo install just
+   # or
+   curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+   ```
+
+2. **Install GitHub CLI:**
    ```bash
    # macOS
    brew install gh
-   
+
    # Linux
    curl -sS https://webi.sh/gh | sh
+
+   # Or use just
+   just install
    ```
 
-2. **Authenticate GitHub CLI:**
+3. **Authenticate GitHub CLI:**
    ```bash
    gh auth login
+   # Or use just
+   just auth
    ```
 
-3. **Install LLM CLI:**
+4. **Install LLM CLI:**
    ```bash
    # Using pip
    pip install llm
-   
+
    # Or using pipx
    pipx install llm
-   
+
    # Configure with your OpenAI API key
    llm keys set openai
+   # Or use just
+   just config-llm
    ```
 
-4. **Install GitHub Copilot CLI (optional):**
+5. **Install GitHub Copilot CLI (optional):**
    ```bash
    gh extension install github/gh-copilot
    ```
 
-5. **Make the script executable:**
+6. **Make scripts executable:**
    ```bash
-   chmod +x /Users/kristiangarza/aves/labs/snowyowl/run_copilot_automation.sh
+   chmod +x *.sh
+   # Or use just
+   just make-executable
    ```
 
 ## 📝 Usage
 
-### Using mise (Recommended)
+### Using just (Recommended)
 
-If you have [mise](https://mise.jdx.dev/) installed, you can use convenient task shortcuts:
+If you have [just](https://just.systems) installed, you can use convenient command shortcuts:
+
+```bash
+# View all available commands
+just --list
+# or
+just help
+
+# Quick start - full setup from scratch
+just quickstart
+
+# Verify installation
+just verify
+
+# Run automation
+just automate
+
+# Dry run (no commits or PRs)
+just automate-dry
+
+# Run with custom root directory
+just automate-custom ~/projects
+
+# Show latest logs
+just logs
+
+# Search for errors in logs
+just logs-errors
+
+# Show git status
+just status
+
+# Clean old log files
+just clean
+```
+
+### Using mise (Alternative)
+
+If you prefer [mise](https://mise.jdx.dev/), you can use these task shortcuts:
 
 ```bash
 # Quick start - run setup wizard
@@ -91,7 +170,7 @@ mise run logs
 mise run logs:errors
 ```
 
-### Basic Usage (without mise)
+### Basic Usage (without just/mise)
 
 ```bash
 ./run_copilot_automation.sh
@@ -169,9 +248,35 @@ copilot -p "Implement the plan for: <TASK>" \
 | `--allow-tool 'shell(gh)'` | Allow GitHub CLI commands |
 | `--deny-tool 'shell(rm)'` | Prevent dangerous deletions |
 
-## 🛠️ Available mise Tasks
+## 🛠️ Available Commands
 
-SnowyOwl includes a comprehensive set of mise tasks for common operations:
+SnowyOwl includes comprehensive command runners for common operations. You can use either **just** (recommended) or **mise**.
+
+### Just Commands
+
+Run `just --list` or `just help` to see all available commands. Key commands include:
+
+| Command | Description |
+|---------|-------------|
+| `just quickstart` | Full setup from scratch |
+| `just install` | Install all required dependencies |
+| `just setup` | Run the initial setup wizard |
+| `just verify` | Verify installation and dependencies |
+| `just auth` | Authenticate with GitHub CLI |
+| `just config-llm` | Configure LLM CLI with API key |
+| `just automate` | Run the main automation workflow |
+| `just automate-dry` | Run automation in dry-run mode |
+| `just automate-custom <dir>` | Run with custom root directory |
+| `just logs` | Show latest automation log |
+| `just logs-errors` | Search for errors in logs |
+| `just clean` | Clean old log files |
+| `just status` | Show git status and recent branches |
+| `just test` | Run test automation |
+| `just sysinfo` | Show system and tool information |
+
+### Mise Tasks
+
+Run `mise tasks ls` to see all available tasks:
 
 | Task | Description |
 |------|-------------|
@@ -188,11 +293,6 @@ SnowyOwl includes a comprehensive set of mise tasks for common operations:
 | `mise run test` | Run test automation on snowyowl itself |
 | `mise run help` | Show all available tasks |
 
-To see all tasks with descriptions:
-```bash
-mise tasks ls
-```
-
 ## 🌙 Overnight Execution
 
 ### Using tmux/screen
@@ -203,6 +303,8 @@ tmux new -s snowyowl
 
 # Run the automation
 ./run_copilot_automation.sh
+# Or with just
+just tmux
 
 # Detach with Ctrl+B, then D
 ```
@@ -210,16 +312,26 @@ tmux new -s snowyowl
 ### Using cron
 
 ```bash
+# Show cron setup instructions
+just cron-help
+
+# Or manually:
 # Edit crontab
 crontab -e
 
 # Add entry to run at 2 AM daily
-0 2 * * * /Users/kristiangarza/aves/labs/snowyowl/run_copilot_automation.sh >> /Users/kristiangarza/aves/labs/snowyowl/logs/cron.log 2>&1
+0 2 * * * cd /path/to/snowyowl && ./run_copilot_automation.sh >> logs/cron.log 2>&1
 ```
 
 ### Using launchd (macOS)
 
-Create a launch agent plist file (see `com.snowyowl.automation.plist` for example).
+```bash
+# Install launchd agent (scheduled for 2 AM daily)
+just install-scheduler
+
+# Uninstall launchd agent
+just uninstall-scheduler
+```
 
 ## 📊 Logs
 
@@ -293,12 +405,18 @@ grep ERROR logs/automation_*.log
 ```
 SnowyOwl Automation
 ├── run_copilot_automation.sh    # Main automation script
+├── setup.sh                      # Setup wizard
+├── verify_installation.sh        # Installation verification
+├── copilot_integration.sh        # Copilot CLI integration
+├── justfile                      # Just command runner config
+├── .mise.toml                    # Mise task runner config
 ├── README.md                     # This file
 ├── TASKS.md                      # Specification document
 ├── config.env                    # Configuration file
 ├── logs/                         # Execution logs
-└── templates/                    # Task templates
-    └── TASKS.template.md         # Template for new repos
+├── templates/                    # Task templates
+│   └── TASKS.template.md         # Template for new repos
+└── examples/                     # Example task files
 ```
 
 ## 🤝 Contributing

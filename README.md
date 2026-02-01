@@ -1,29 +1,49 @@
-# 🦉 SnowyOwl - GitHub Copilot CLI Automation Workflow
+# 🦉 SnowyOwl - AI-Powered Automation Workflow
 
-An automated overnight workflow system that uses GitHub Copilot CLI to autonomously read tasks, implement code changes, and create pull requests.
+An automated overnight workflow system that uses AI coding assistants to autonomously read tasks, implement code changes, and create pull requests.
 
 ## 📋 Overview
 
-SnowyOwl automates the complete software development workflow using GitHub Copilot CLI in programmatic mode:
+SnowyOwl automates the complete software development workflow using AI coding assistants in programmatic mode. It supports multiple AI backends:
+
+- **GitHub Copilot CLI** - GitHub's AI coding assistant
+- **Claude Code CLI** - Anthropic's agentic coding tool
+
+The workflow:
 
 1. **Read** - Scans repositories for `TASKS.md` files
 2. **Plan** - Generates implementation plans for each task
-3. **Implement** - Makes code changes automatically
-4. **Commit** - Creates clean, descriptive commits
-5. **Push** - Pushes changes to GitHub
-6. **PR** - Opens pull requests for review
+3. **Worktree** - Creates isolated git worktrees for parallel work
+4. **Implement** - Makes code changes automatically in worktrees
+5. **Commit** - Creates clean, descriptive commits
+6. **Push** - (Optional) Pushes changes to GitHub
+7. **PR** - (Optional) Opens pull requests for review
+8. **Cleanup** - Removes worktrees after completion
+
+### Key Features
+
+- **Git Worktrees**: Uses git worktrees for isolated, parallel development
+- **Safe Defaults**: Commits locally by default (no automatic pushes/PRs)
+- **Multiple AI Models**: Choose from various models for each backend
+- **Intelligent Task Parsing**: Uses LLM to understand task structure
+- **Task Specifications**: Link to detailed markdown specs for complex tasks
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
+**Required:**
 - **Git** - Version control
 - **GitHub CLI (gh)** - For PR creation and GitHub integration
 - **LLM CLI** - For intelligent task parsing ([simonw/llm](https://github.com/simonw/llm))
-- **GitHub Copilot CLI** - For AI-powered code generation (optional)
-- **GitHub Copilot subscription** - Pro, Business, or Enterprise (optional)
+
+
+**AI Backend (choose one or both):**
+- **GitHub Copilot CLI** - GitHub's AI coding assistant (requires Copilot subscription)
+- **Claude Code CLI** - Anthropic's agentic coding tool ([docs](https://docs.anthropic.com/en/docs/claude-code))
 - **just** - Command runner (optional, but recommended) ([casey/just](https://github.com/casey/just))
 - **mise** - Task runner and environment manager (optional, alternative to just) ([jdx/mise](https://github.com/jdx/mise))
+
 
 ### Installation
 
@@ -91,16 +111,21 @@ just verify
    just config-llm
    ```
 
-5. **Install GitHub Copilot CLI (optional):**
+4. **Install AI Backend(s):**
+
+   **Option A: GitHub Copilot CLI**
    ```bash
    gh extension install github/gh-copilot
    ```
 
-6. **Make scripts executable:**
+   **Option B: Claude Code CLI**
    ```bash
-   chmod +x *.sh
-   # Or use just
-   just make-executable
+   curl -fsSL https://claude.ai/install.sh | bash
+   ```
+
+5. **Make the script executable:**
+   ```bash
+   chmod +x run_copilot_automation.sh
    ```
 
 ## 📝 Usage
@@ -154,11 +179,17 @@ mise run setup
 # Verify installation
 mise run verify
 
-# Run automation
+# Run automation (uses default backend)
 mise run automate
+
+# Run with specific AI backend
+mise run automate:copilot    # Use GitHub Copilot CLI
+mise run automate:claude     # Use Claude Code CLI
 
 # Dry run (no commits or PRs)
 mise run automate:dry
+mise run automate:copilot:dry
+mise run automate:claude:dry
 
 # View all available tasks
 mise tasks ls
@@ -179,9 +210,12 @@ mise run logs:errors
 This will:
 - Scan all repositories in `~/aves`
 - Process repositories with `TASKS.md` files
-- Create feature branches named `snowyowl-ai-<timestamp>`
+- Create git worktrees in `~/aves/worktrees/` for isolated work
+- Create feature branches named `snowyowl-ai-<task>-<timestamp>`
+- Implement tasks using AI in the worktrees
 - Commit changes per task
-- Create pull requests
+- Clean up worktrees after completion
+- Keep branches locally (no push/PR by default)
 
 ### Advanced Usage
 
@@ -192,11 +226,25 @@ This will:
 # Use different base branch
 ./run_copilot_automation.sh --base-branch develop
 
+# Select AI backend
+./run_copilot_automation.sh --backend claude   # Use Claude Code
+./run_copilot_automation.sh --backend copilot  # Use GitHub Copilot (default)
+
+# Select AI model (defaults: gpt-4o for copilot, claude-sonnet-4-5-20250514 for claude)
+./run_copilot_automation.sh --model gpt-4-turbo          # Use GPT-4 Turbo with Copilot
+./run_copilot_automation.sh --backend claude --model claude-3-opus-20240229  # Use Claude Opus
+
+# Enable PR creation (default: only commits locally)
+./run_copilot_automation.sh --create-pr
+
 # Dry run (no commits or PRs)
 ./run_copilot_automation.sh --dry-run
 
 # Combine options
-./run_copilot_automation.sh --root ~/projects --base-branch main --dry-run
+./run_copilot_automation.sh --root ~/projects --backend claude --model claude-sonnet-4-5-20250514 --create-pr
+
+# Use environment variables
+SNOWYOWL_BACKEND=claude SNOWYOWL_MODEL=claude-sonnet-4-5-20250514 SNOWYOWL_CREATE_PR=true ./run_copilot_automation.sh
 ```
 
 ### Options
@@ -205,8 +253,26 @@ This will:
 |--------|-------------|---------|
 | `-r, --root DIR` | Root directory containing repositories | `$HOME/aves` |
 | `-b, --base-branch` | Base branch for PRs | `main` |
+| `-B, --backend NAME` | AI backend: `copilot` or `claude` | `copilot` |
+| `-m, --model NAME` | AI model to use | `gpt-4o` (copilot) / `claude-sonnet-4-5-20250514` (claude) |
+| `-p, --create-pr` | Enable PR creation (push to GitHub and create PR) | `false` |
 | `-d, --dry-run` | Test mode - no commits or PRs | `false` |
 | `-h, --help` | Show help message | - |
+
+**Available Models:**
+
+For GitHub Copilot (`--backend copilot`):
+- `gpt-4o` (default) - Latest GPT-4 Omni model
+- `gpt-4-turbo` - GPT-4 Turbo
+- `gpt-4` - Standard GPT-4
+- `gpt-3.5-turbo` - Faster, less expensive
+- `o1-preview` - OpenAI o1 preview
+- `o1-mini` - Smaller o1 variant
+
+For Claude Code (`--backend claude`):
+- `claude-sonnet-4-5-20250514` (default) - Latest Claude Sonnet 4.5
+- `claude-3-5-sonnet-20241022` - Claude 3.5 Sonnet (Oct 2024)
+- `claude-3-opus-20240229` - Claude 3 Opus (most capable)
 
 ## 📄 TASKS.md Format
 
@@ -227,27 +293,64 @@ Create a `TASKS.md` file in each repository you want to automate:
 - Each task should be clear and actionable
 - Tasks can be nested (parent tasks with subtasks)
 
-## 🔧 Integration with Copilot CLI
+## 🔧 AI Backend Integration
 
-This script is designed to work **with** GitHub Copilot CLI in programmatic mode. The full integration would use:
+SnowyOwl supports multiple AI backends, each with their own CLI interface and capabilities.
+
+### GitHub Copilot CLI
+
+Uses programmatic mode with tool permissions:
 
 ```bash
-copilot -p "Implement the plan for: <TASK>" \
-  --allow-tool 'write' \
-  --allow-tool 'shell(git)' \
-  --allow-tool 'shell(gh)' \
-  --deny-tool 'shell(rm)'
+copilot --allow-all-tools --deny-tool 'shell(rm)' < prompt.txt
 ```
-
-### Tool Permissions
 
 | Flag | Purpose |
 |------|---------|
-| `--allow-tool 'write'` | Allow file modifications |
-| `--allow-tool 'shell(git)'` | Allow Git commands |
-| `--allow-tool 'shell(gh)'` | Allow GitHub CLI commands |
+| `--allow-all-tools` | Enable all tools for non-interactive mode |
 | `--deny-tool 'shell(rm)'` | Prevent dangerous deletions |
 
+### Claude Code CLI
+
+Uses headless mode with permission controls:
+
+```bash
+claude -p "Your task prompt" \
+  --allowedTools "Read,Write,Edit,Bash,Grep,Glob" \
+  --permission-mode acceptEdits
+```
+
+| Flag | Purpose |
+|------|---------|
+| `-p` | Run in print/headless mode |
+| `--allowedTools` | Specify which tools Claude can use |
+| `--permission-mode` | Auto-accept edits without prompting |
+
+### Configuration
+
+Backend settings can be customized in `config.env`:
+
+```bash
+# Select default backend
+SNOWYOWL_BACKEND="copilot"  # or "claude"
+
+# Select default AI model (leave empty to use backend defaults)
+SNOWYOWL_MODEL=""  # gpt-4o (copilot) or claude-sonnet-4-5-20250514 (claude)
+
+# Enable PR creation by default (default: false)
+SNOWYOWL_CREATE_PR=false
+
+# Claude-specific settings
+CLAUDE_ALLOWED_TOOLS="Read,Write,Edit,Bash,Grep,Glob"
+CLAUDE_PERMISSION_MODE="acceptEdits"
+
+# Copilot-specific settings
+COPILOT_DENY_TOOLS="shell(rm)"
+```
+
+**Important:** By default, SnowyOwl only commits changes locally and does NOT create PRs. Use `--create-pr` flag or set `SNOWYOWL_CREATE_PR=true` in config.env to enable PR creation.
+
+## 🛠️ Available mise Tasks
 ## 🛠️ Available Commands
 
 SnowyOwl includes comprehensive command runners for common operations. You can use either **just** (recommended) or **mise**.
@@ -282,14 +385,20 @@ Run `mise tasks ls` to see all available tasks:
 |------|-------------|
 | `mise run setup` | Run the initial setup wizard |
 | `mise run verify` | Verify installation and dependencies |
-| `mise run automate` | Run the main automation workflow |
-| `mise run automate:dry` | Run automation in dry-run mode |
-| `mise run automate:custom` | Run automation with custom root directory |
+| `mise run automate` | Run automation with default backend |
+| `mise run automate:copilot` | Run automation with Copilot backend |
+| `mise run automate:claude` | Run automation with Claude backend |
+| `mise run automate:dry` | Run in dry-run mode |
+| `mise run automate:copilot:dry` | Copilot backend, dry-run |
+| `mise run automate:claude:dry` | Claude backend, dry-run |
+| `mise run automate:custom` | Run with custom options |
+| `mise run install` | Install all dependencies |
+| `mise run install:copilot` | Install Copilot CLI only |
+| `mise run install:claude` | Install Claude Code CLI only |
 | `mise run logs` | Show latest automation log |
 | `mise run logs:errors` | Search for errors in logs |
 | `mise run clean` | Clean old log files |
 | `mise run status` | Show git status and recent branches |
-| `mise run install` | Install all required dependencies |
 | `mise run test` | Run test automation on snowyowl itself |
 | `mise run help` | Show all available tasks |
 
@@ -357,8 +466,47 @@ grep ERROR logs/automation_*.log
 
 1. **Tool restrictions** - Only allowed tools can be executed
 2. **Dry run mode** - Test without making changes
-3. **Branch isolation** - Changes in separate feature branches
-4. **Comprehensive logging** - Full audit trail
+3. **Git worktrees** - Isolated work environments, no branch switching
+4. **Branch isolation** - Changes in separate feature branches
+5. **Local-first** - Commits locally by default (no automatic push/PR)
+6. **Comprehensive logging** - Full audit trail
+7. **Worktree cleanup** - Automatic cleanup after completion
+
+## 🗂️ Project Structure
+
+```
+snowyowl/
+├── run_copilot_automation.sh  # Main automation script
+├── config.env                  # Configuration file
+├── setup.sh                    # Setup wizard
+├── verify_installation.sh      # Dependency checker
+├── logs/                       # Automation logs
+│   ├── automation_*.log       # Main logs
+│   └── repo_*.log             # Per-repository logs
+├── worktrees/                  # Git worktrees (auto-created)
+│   └── reponame-branch-*      # Named: repo_name-branch_name
+├── templates/                  # Task templates
+└── examples/                   # Example task files
+```
+
+### Git Worktrees
+
+SnowyOwl uses git worktrees to create isolated working directories for each task:
+
+- **Location**: `$ROOT/worktrees/` (typically `~/aves/worktrees/`)
+- **Naming**: `{repo_name}-{branch_name}` (e.g., `myapp-snowyowl-ai-feature-1234567890`)
+- **Benefits**:
+  - Work on multiple tasks in parallel
+  - No branch switching in main repository
+  - Isolated file system changes
+  - Safe cleanup without affecting main repo
+- **Lifecycle**:
+  1. Created when task processing starts
+  2. AI makes changes in the worktree
+  3. Changes are committed in the worktree
+  4. If `--create-pr` is enabled, branch is pushed
+  5. Worktree is automatically cleaned up
+  6. Branch remains in repository for review
 5. **PR workflow** - All changes require review before merge
 
 ## 🎯 Best Practices
@@ -445,6 +593,16 @@ gh auth login
 gh auth status
 ```
 
+**"Claude Code CLI not installed"**
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**"Copilot CLI not installed"**
+```bash
+gh extension install github/gh-copilot
+```
+
 **"Permission denied"**
 ```bash
 chmod +x run_copilot_automation.sh
@@ -460,6 +618,12 @@ chmod +x run_copilot_automation.sh
 - Check GitHub authentication
 - Ensure base branch exists
 
+**"AI backend implementation failed"**
+- Check logs for detailed error messages
+- Verify the selected backend CLI is installed
+- Try running with `--dry-run` first
+- Check that you have valid API credentials for the backend
+
 ## 📜 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
@@ -467,6 +631,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## 🔗 References
 
 - [GitHub Copilot CLI Documentation](https://docs.github.com/copilot/concepts/agents/about-copilot-cli)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
 - [GitHub CLI Documentation](https://cli.github.com/manual/)
 - [Original Specification](./TASKS.md)
 

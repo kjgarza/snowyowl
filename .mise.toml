@@ -10,19 +10,37 @@ description = "Verify installation and dependencies"
 run = "./verify_installation.sh"
 
 [tasks.automate]
-description = "Run the main automation workflow"
+description = "Run the main automation workflow (uses default backend)"
 run = "./run_copilot_automation.sh"
 
 [tasks."automate:dry"]
 description = "Run automation in dry-run mode (no commits/PRs)"
 run = "./run_copilot_automation.sh --dry-run"
 
+[tasks."automate:copilot"]
+description = "Run automation with GitHub Copilot CLI backend"
+run = "./run_copilot_automation.sh --backend copilot"
+
+[tasks."automate:claude"]
+description = "Run automation with Claude Code CLI backend"
+run = "./run_copilot_automation.sh --backend claude"
+
+[tasks."automate:copilot:dry"]
+description = "Run Copilot backend in dry-run mode"
+run = "./run_copilot_automation.sh --backend copilot --dry-run"
+
+[tasks."automate:claude:dry"]
+description = "Run Claude backend in dry-run mode"
+run = "./run_copilot_automation.sh --backend claude --dry-run"
+
 [tasks."automate:custom"]
 description = "Run automation with custom root directory"
 run = """
 read -p "Enter root directory [~/aves]: " ROOT_DIR
 ROOT_DIR=${ROOT_DIR:-~/aves}
-./run_copilot_automation.sh --root "$ROOT_DIR"
+read -p "Enter backend (copilot/claude) [copilot]: " BACKEND
+BACKEND=${BACKEND:-copilot}
+./run_copilot_automation.sh --root "$ROOT_DIR" --backend "$BACKEND"
 """
 
 [tasks.logs]
@@ -83,7 +101,35 @@ if ! gh extension list | grep -q gh-copilot; then
   gh extension install github/gh-copilot
 fi
 
+# Install Claude Code CLI
+if ! command -v claude &> /dev/null; then
+  echo "Installing Claude Code CLI..."
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+
 echo "✅ All dependencies installed!"
+"""
+
+[tasks."install:copilot"]
+description = "Install GitHub Copilot CLI only"
+run = """
+if ! gh extension list | grep -q gh-copilot; then
+  echo "Installing GitHub Copilot CLI..."
+  gh extension install github/gh-copilot
+else
+  echo "GitHub Copilot CLI already installed"
+fi
+"""
+
+[tasks."install:claude"]
+description = "Install Claude Code CLI only"
+run = """
+if ! command -v claude &> /dev/null; then
+  echo "Installing Claude Code CLI..."
+  curl -fsSL https://claude.ai/install.sh | bash
+else
+  echo "Claude Code CLI already installed"
+fi
 """
 
 [tasks.test]

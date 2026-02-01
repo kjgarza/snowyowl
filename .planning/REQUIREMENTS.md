@@ -86,13 +86,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (Populated by roadmap creation) | | |
+| MODE-01 | Phase 1 | Pending |
+| MODE-02 | Phase 1 | Pending |
+| MODE-03 | Phase 1 | Pending |
+| MODE-04 | Phase 1 | Pending |
+| LOG-01 | Phase 1 | Pending |
+| LOG-02 | Phase 1 | Pending |
+| LOG-03 | Phase 1 | Pending |
+| WORK-01 | Phase 2 | Pending |
+| WORK-02 | Phase 2 | Pending |
+| WORK-03 | Phase 2 | Pending |
+| WORK-04 | Phase 2 | Pending |
+| READY-01 | Phase 3 | Pending |
+| READY-02 | Phase 3 | Pending |
+| READY-03 | Phase 3 | Pending |
+| READY-04 | Phase 3 | Pending |
+| READY-05 | Phase 3 | Pending |
+| EXEC-01 | Phase 3 | Pending |
+| EXEC-02 | Phase 3 | Pending |
+| EXEC-03 | Phase 3 | Pending |
+| EXEC-04 | Phase 3 | Pending |
+| EXEC-05 | Phase 3 | Pending |
+| PR-01 | Phase 4 | Pending |
+| PR-02 | Phase 4 | Pending |
+| PR-03 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 21 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 21 ⚠️
+- v1 requirements: 24 total
+- Mapped to phases: 24 (100%)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after initial definition*
+*Last updated: 2026-02-01 after roadmap creation*

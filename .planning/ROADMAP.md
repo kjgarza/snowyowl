@@ -29,10 +29,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. System falls back to appropriate mode when environment variable not set (file presence detection)
   4. Dry-run mode tests readiness detection without executing phases
   5. GSD events logged to dedicated log files with timestamps and exit codes
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 01-01: TBD during phase planning
+- [ ] 01-01-PLAN.md — Mode detection, GSD logging, and dry-run infrastructure in lib/config.sh
 
 ### Phase 2: Worktree Infrastructure
 **Goal**: Git worktrees can be safely created, used, and cleaned up even under error/timeout conditions
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Mode Management | 0/TBD | Not started | - |
+| 1. Foundation & Mode Management | 0/1 | Planned | - |
 | 2. Worktree Infrastructure | 0/TBD | Not started | - |
 | 3. GSD Scanner & Executor | 0/TBD | Not started | - |
 | 4. Integration & PR Creation | 0/TBD | Not started | - |
